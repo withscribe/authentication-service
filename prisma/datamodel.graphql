@@ -1,0 +1,33 @@
+type User {
+  id: ID! @unique
+  email: String! @unique
+  password: String!
+  remember_me: Boolean!
+  account_state: AccountState
+  role: [Role!]!
+  domain: Domain
+  profileID: ID @unique
+}
+
+type AccountState {
+  id: ID! @unique
+  state: String!
+  desc: String
+}
+
+type Role {
+  id: ID! @unique
+  role: String!
+  desc: String
+}
+
+type Domain {
+  id: ID! @unique
+  domain: String!
+  desc: String!
+}
+
+type AuthPayload {
+  token: String
+  user: User
+}

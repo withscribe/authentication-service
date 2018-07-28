@@ -1,0 +1,23 @@
+{
+  "name": "prisma",
+  "version": "1.0.0",
+  "description": "Authentication Microservice for the Unravel Platform",
+  "main": "index.js",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "graphql-yoga": "^1.14.6",
+    "jsonwebtoken": "^8.3.0",
+    "prisma-binding": "^2.0.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "nodemon": "^1.17.5"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon --exec node src/index.js"
+  },
+  "author": "Austin Howlett",
+  "license": "ISC"
+}

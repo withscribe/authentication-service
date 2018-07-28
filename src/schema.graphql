@@ -1,0 +1,15 @@
+# import * from './generated/prisma.graphql'
+
+
+type Query {
+    findUserById(id: ID!): User
+    findUserByProfileId(profileID: ID!): User
+    allUsers: [User!]!
+}
+
+type Mutation {
+    createNewUser(email: String!, remember_me: Boolean!): User
+    setProfileToUserAccount(userId: ID!, profileID: ID!): User
+    register(email: String!, password: String!): AuthPayload
+    login(email: String!, password: String!): AuthPayload
+}
