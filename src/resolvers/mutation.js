@@ -34,7 +34,7 @@ async function login(parent, args, context, info) {
         throw new Error('Invalid password')
     }
 
-    const token = jwt.sign({ userId: user.id }, ` { id } `)
+    const token = jwt.sign({ userId: user.id }, APP_SECRET)
 
     return {
         token,
