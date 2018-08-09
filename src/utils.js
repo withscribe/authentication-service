@@ -1,11 +1,11 @@
 const jwt = require('jsonwebtoken')
-const APP_SECRET = 'super-duper-secret-key'
+const config = require('./resolvers/config')
 
 function getUserId(context) {
   const Authorization = context.request.get('Authorization')
   if (Authorization) {
     const token = Authorization.replace('Bearer ', '')
-    const { userId } = jwt.verify(token, APP_SECRET)
+    const { userId } = jwt.verify(token, config.secret)
     return userId
   }
 
@@ -13,6 +13,5 @@ function getUserId(context) {
 }
 
 module.exports = {
-  APP_SECRET,
   getUserId,
 }

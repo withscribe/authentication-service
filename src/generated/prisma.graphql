@@ -1,5 +1,5 @@
 # source: http://localhost:4467
-# timestamp: Sat Jul 28 2018 12:40:37 GMT-0400 (Eastern Daylight Time)
+# timestamp: Sun Aug 05 2018 23:49:49 GMT-0400 (Eastern Daylight Time)
 
 type AccountState implements Node {
   id: ID!
@@ -275,7 +275,9 @@ type AggregateUser {
 
 type AuthPayload {
   token: String
+  refreshToken: String
   user(where: UserWhereInput): User
+  status: String
 }
 
 """A connection to a list of items."""
@@ -290,6 +292,8 @@ type AuthPayloadConnection {
 
 input AuthPayloadCreateInput {
   token: String
+  refreshToken: String
+  status: String
   user: UserCreateOneInput
 }
 
@@ -305,6 +309,10 @@ type AuthPayloadEdge {
 enum AuthPayloadOrderByInput {
   token_ASC
   token_DESC
+  refreshToken_ASC
+  refreshToken_DESC
+  status_ASC
+  status_DESC
   id_ASC
   id_DESC
   updatedAt_ASC
@@ -315,6 +323,8 @@ enum AuthPayloadOrderByInput {
 
 type AuthPayloadPreviousValues {
   token: String
+  refreshToken: String
+  status: String
 }
 
 type AuthPayloadSubscriptionPayload {
@@ -358,6 +368,8 @@ input AuthPayloadSubscriptionWhereInput {
 
 input AuthPayloadUpdateInput {
   token: String
+  refreshToken: String
+  status: String
   user: UserUpdateOneInput
 }
 
@@ -410,6 +422,86 @@ input AuthPayloadWhereInput {
 
   """All values not ending with the given string."""
   token_not_ends_with: String
+  refreshToken: String
+
+  """All values that are not equal to given value."""
+  refreshToken_not: String
+
+  """All values that are contained in given list."""
+  refreshToken_in: [String!]
+
+  """All values that are not contained in given list."""
+  refreshToken_not_in: [String!]
+
+  """All values less than the given value."""
+  refreshToken_lt: String
+
+  """All values less than or equal the given value."""
+  refreshToken_lte: String
+
+  """All values greater than the given value."""
+  refreshToken_gt: String
+
+  """All values greater than or equal the given value."""
+  refreshToken_gte: String
+
+  """All values containing the given string."""
+  refreshToken_contains: String
+
+  """All values not containing the given string."""
+  refreshToken_not_contains: String
+
+  """All values starting with the given string."""
+  refreshToken_starts_with: String
+
+  """All values not starting with the given string."""
+  refreshToken_not_starts_with: String
+
+  """All values ending with the given string."""
+  refreshToken_ends_with: String
+
+  """All values not ending with the given string."""
+  refreshToken_not_ends_with: String
+  status: String
+
+  """All values that are not equal to given value."""
+  status_not: String
+
+  """All values that are contained in given list."""
+  status_in: [String!]
+
+  """All values that are not contained in given list."""
+  status_not_in: [String!]
+
+  """All values less than the given value."""
+  status_lt: String
+
+  """All values less than or equal the given value."""
+  status_lte: String
+
+  """All values greater than the given value."""
+  status_gt: String
+
+  """All values greater than or equal the given value."""
+  status_gte: String
+
+  """All values containing the given string."""
+  status_contains: String
+
+  """All values not containing the given string."""
+  status_not_contains: String
+
+  """All values starting with the given string."""
+  status_starts_with: String
+
+  """All values not starting with the given string."""
+  status_not_starts_with: String
+
+  """All values ending with the given string."""
+  status_ends_with: String
+
+  """All values not ending with the given string."""
+  status_not_ends_with: String
   user: UserWhereInput
 }
 

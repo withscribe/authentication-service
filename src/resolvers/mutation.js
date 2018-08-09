@@ -1,9 +1,16 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const { APP_SECRET, getUserId } = require('../utils')
+const { getUserId } = require('../utils')
+const config = require('./config')
+
+// TODO: Need to find a better way to store refresh tokens
+const tokenList = {}
 
 async function register(parent, args, context, info) {
-            
+    
+    // TODO: Generate and encrypt with and store salt
+    // const salt = ....
+
     const password = await bcrypt.hash(args.password, 10)
 
     const user = await context.prisma.mutation.createUser({
@@ -12,34 +19,92 @@ async function register(parent, args, context, info) {
             password: password,
             remember_me: true
         },
-    }, ` { id } `)
+    }, ` { id, email } `)
 
-    const token = jwt.sign({ userId: user.id }, APP_SECRET)
+    // TODO: Add secrets to environment variables and read from .env file
+
+    const token = jwt.sign({ userId: user.id, email: user.email, expiresIn: config.tokenLife }, config.secret)
+    const refreshToken = jwt.sign({ userId: user.id, email: user.email, expiresIn: config.refreshTokenLife }, config.refreshSecret)
+    const status = "Registered/Logged In"
+    
+    const tokensToPersist = {
+        "token": token,
+        "refreshToken": refreshToken
+    }
+
+    tokenList[refreshToken] = tokensToPersist
 
     return {
         token,
-        user
+        refreshToken,
+        user,
+        status
     }
 }
 
 async function login(parent, args, context, info) {
 
     const user = await context.prisma.query.user({ where: { email: args.email } }, ` { id, email, password } ` )
+
     if(!user) {
         throw new Error("No such user found")
     }
 
+
+    // TODO: Compare using the stored salt
+
     const valid = await bcrypt.compare(args.password, user.password)
+
     if(!valid) {
         throw new Error('Invalid password')
     }
 
-    const token = jwt.sign({ userId: user.id }, ` { id } `)
+    // TODO: Add secrets to environment variables and read from .env file
+
+    const token = jwt.sign({ userId: user.id, email: user.email, expiresIn: config.tokenLife }, config.secret)
+    const refreshToken = jwt.sign({ userId: user.id, email: user.email, expiresIn: config.refreshTokenLife }, config.refreshSecret)
+    const status = "Logged In"
+
+    const tokensToPersist = {
+        "token": token,
+        "refreshToken": refreshToken
+    }
+
+    tokenList[refreshToken] = tokensToPersist
 
     return {
         token,
-        user
+        refreshToken,
+        user,
+        status
     }
+}
+
+async function token(_, args, context, info) {
+
+    if((args.refreshToken) && (args.refreshToken in tokenList)) {
+
+        const user = await context.prisma.query.user({ where: { email: args.email } }, ` { id, email} ` )
+
+        console.log(user)
+        const token = jwt.sign({ userId: user.id, email: user.email, expiresIn: config.tokenLife }, config.secret)
+        
+        console.log(token)
+        tokenList[args.refreshToken].token = token;
+
+        return {
+            token,
+            user
+        }
+
+    } else {
+
+        // TODO: Return a proper http response (401)
+
+        throw new Error("Invalid Token")
+    }
+    
+
 }
 
 function createNewUser(_, args, context, info) {

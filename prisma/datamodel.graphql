@@ -29,5 +29,7 @@ type Domain {
 
 type AuthPayload {
   token: String
+  refreshToken: String
   user: User
+  status: String
 }

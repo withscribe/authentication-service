@@ -12,4 +12,5 @@ type Mutation {
     setProfileToUserAccount(userId: ID!, profileID: ID!): User
     register(email: String!, password: String!): AuthPayload
     login(email: String!, password: String!): AuthPayload
+    token(email: String!, refreshToken: String!): AuthPayload
 }

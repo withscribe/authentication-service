@@ -25,7 +25,7 @@ function findUserByProfileId (_, ars, context, info) {
 }
 
 function allUsers(_, args, context, info) {
-    const userId = getUserId(context)
+    //const userId = getUserId(context)
     return context.prisma.query.users(
         _,
         info
