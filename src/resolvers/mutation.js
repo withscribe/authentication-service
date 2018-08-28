@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const { getUserId } = require('../utils')
+const { getAccountId } = require('../utils')
 require('dotenv').config()
 
 // TODO: Need to find a better way to store refresh tokens
@@ -218,7 +218,7 @@ function removeAccount(_, args, context, info) {
 }
 
 function setProfileToAccount(_, args, context, info) {
-    //const accountId = getAccountId(context)
+    const accountId = getAccountId(context)
     return context.prisma.mutation.updateAccount(
         {
             where: {
