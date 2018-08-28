@@ -1,13 +1,13 @@
 // resolve the `AuthPayload` type
 
-const user = {
+const account = {
 
-  user: async ({ user: { id } }, args, ctx, info) => {
+  account: async ({ account: { id } }, args, ctx, info) => {
 
-    return ctx.prisma.query.user({ where: { id } }, info)
+    return ctx.prisma.query.account({ where: { id } }, info)
 
   },
 
 }
   
-  module.exports = { user }
+  module.exports = { account }

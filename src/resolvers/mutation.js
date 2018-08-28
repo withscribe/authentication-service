@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { getUserId } = require('../utils')
-const config = require('./config')
+require('dotenv').config()
 
 // TODO: Need to find a better way to store refresh tokens
 const tokenList = {}
@@ -13,18 +13,23 @@ async function register(parent, args, context, info) {
 
     const password = await bcrypt.hash(args.password, 10)
 
-    const user = await context.prisma.mutation.createUser({
+    const account = await context.prisma.mutation.createAccount({
         data: { 
             email: args.email, 
             password: password,
-            remember_me: true
+            roles: {
+                create: [
+                    {
+                        role: "REGULAR",
+                        desc: "Default User Role"
+                    }
+                ]
+            }
         },
     }, ` { id, email } `)
 
-    // TODO: Add secrets to environment variables and read from .env file
-
-    const token = jwt.sign({ userId: user.id, email: user.email, expiresIn: config.tokenLife }, config.secret)
-    const refreshToken = jwt.sign({ userId: user.id, email: user.email, expiresIn: config.refreshTokenLife }, config.refreshSecret)
+    const token = jwt.sign({ accountId: account.id, email: account.email }, process.env.TOKEN_SECRET, { expiresIn: '1h' })
+    const refreshToken = jwt.sign({ accountId: account.id, email: account.email }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1h' })
     const status = "Registered/Logged In"
     
     const tokensToPersist = {
@@ -37,32 +42,45 @@ async function register(parent, args, context, info) {
     return {
         token,
         refreshToken,
-        user,
+        account,
         status
     }
 }
 
 async function login(parent, args, context, info) {
 
-    const user = await context.prisma.query.user({ where: { email: args.email } }, ` { id, email, password } ` )
 
-    if(!user) {
-        throw new Error("No such user found")
+    if(args.rememberMe)
+        context.prisma.mutation.updateAccount({ where: { id: user.id }, data: { rememberMe: args.rememberMe }})
+
+    const account = await context.prisma.query.account({ where: { email: args.email } }, ` { id, email, password } ` )
+
+    if(!account) {
+        return {
+            error: {
+                field: 'email',
+                msg: 'No User Found'
+            }
+        }
     }
 
 
     // TODO: Compare using the stored salt
 
-    const valid = await bcrypt.compare(args.password, user.password)
+    const valid = await bcrypt.compare(args.password, account.password)
 
     if(!valid) {
-        throw new Error('Invalid password')
+        return {
+            error: {
+                field: 'password',
+                msg: 'Invalid Password'
+            }
+        }
     }
 
-    // TODO: Add secrets to environment variables and read from .env file
 
-    const token = jwt.sign({ userId: user.id, email: user.email, expiresIn: config.tokenLife }, config.secret)
-    const refreshToken = jwt.sign({ userId: user.id, email: user.email, expiresIn: config.refreshTokenLife }, config.refreshSecret)
+    const token = jwt.sign({ accountId: account.id, email: account.email }, process.env.TOKEN_SECRET, { expiresIn: '7d' })
+    const refreshToken = jwt.sign({ accountId: account.id, email: account.emaill }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' })
     const status = "Logged In"
 
     const tokensToPersist = {
@@ -75,63 +93,136 @@ async function login(parent, args, context, info) {
     return {
         token,
         refreshToken,
-        user,
+        account,
         status
     }
 }
 
-async function token(_, args, context, info) {
+async function refresh(_, args, context, info) {
 
     if((args.refreshToken) && (args.refreshToken in tokenList)) {
 
-        const user = await context.prisma.query.user({ where: { email: args.email } }, ` { id, email} ` )
+        const account = await context.prisma.query.account({ where: { email: args.email } }, ` { id, email} ` )
 
-        console.log(user)
-        const token = jwt.sign({ userId: user.id, email: user.email, expiresIn: config.tokenLife }, config.secret)
+        console.log(account)
+        const token = jwt.sign({ accountId: account.id, email: account.email }, process.env.TOKEN_SECRET, { expiresIn: config.tokenLife })
         
         console.log(token)
         tokenList[args.refreshToken].token = token;
 
         return {
             token,
-            user
+            account
         }
 
     } else {
 
         // TODO: Return a proper http response (401)
 
-        throw new Error("Invalid Token")
+        throw new Error("Invalid Token:" + info + " : " + context)
     }
     
 
 }
 
-function createNewUser(_, args, context, info) {
+function createAccountConnect(_, args, context, info) {
     // if retrieval of userid is unsuccessfull then an error will throw
     // and the mutation will not be invoked
-    const userId = getUserId(context)
-    return context.prisma.mutation.createUser(
+    const accountId = getAccountId(context)
+    return context.prisma.mutation.createAccount(
         {
             data: {
                 email: args.email,
-                remember_me: args.remember_me,
-                // account_state: {
-                //     connect: {
-                //         id: args.stateId
-                //     },
-                // },
+                password: args.email,
+                acountState: args.state,
+                accountType: args.accountType,
+                country: args.county,
+                roles: {
+                    connect: [
+                        { id: args.roleId }
+                    ]
+                },
+                profileId: args.profileId
             },
             info
         },
     )
 }
 
-function setProfileToUserAccount(_, args, context, info) {
-    return context.prisma.mutation.updateUser(
+function createAccountCreate(_, args, context, info) {
+    // if retrieval of userid is unsuccessfull then an error will throw
+    // and the mutation will not be invoked
+    const accountId = getAccountId(context)
+    return context.prisma.mutation.createAccount(
+        {
+            data: {
+                email: args.email,
+                password: args.email,
+                acountState: args.state,
+                accountType: args.accountType,
+                country: args.county,
+                role: {
+                    create: [
+                        {
+                            role: args.role,
+                            desc:  args.desc
+                        }
+                    ]
+                },
+                profileId: args.profileId
+            },
+            info
+        },
+    )
+}
+
+function updateAccount(_, args, context, info) {
+    // if retrieval of userid is unsuccessfull then an error will throw
+    // and the mutation will not be invoked
+    const accountId = getAccountId(context)
+    return context.prisma.mutation.updateAccount(
         {
             where: {
-                id: args.userId
+                id: args.accountId
+            },
+            data: {
+                email: args.email,
+                password: args.email,
+                accountState: args.state,
+                accountType: args.accountType,
+                country: args.country,
+                roles: {
+                    connect: [
+                        { id: args.roleId }
+                    ]
+                },
+                //profileId: args.profileId
+            },
+            info
+        },
+    )
+}
+
+function removeAccount(_, args, context, info) {
+    const accountId = getAccountId(context)
+    return context.prisma.mutation.deleteAccount(
+        {
+            where: {
+                OR: [
+                    { id: args.id },
+                    { email: args.email }
+                ]
+            }
+        }
+    )
+}
+
+function setProfileToAccount(_, args, context, info) {
+    //const accountId = getAccountId(context)
+    return context.prisma.mutation.updateAccount(
+        {
+            where: {
+                id: args.accountId
             },
             data: {
                 profileID: args.profileID
@@ -141,9 +232,73 @@ function setProfileToUserAccount(_, args, context, info) {
     )
 }
 
+function createRole(_, args, context, info) {
+    const accountId = getAccountId(context)
+    return context.prisma.mutation.createRole(
+        {
+            data: {
+                role: args.role,
+                desc: args.desc
+            },
+            info
+        }
+    )
+}
+
+function updateState(_, args, context, info) {
+    const accountId = getAccountId(context)
+    return context.prisma.mutation.updateAccount(
+        {
+            where: {
+                id: args.accountId
+            },
+            data: {
+                accountState: args.state
+            }, 
+            info
+        }
+    )
+}
+
+function flagAccount(_, args, context, info) {
+    const accountId = getAccountId(context)
+    return context.prisma.mutation.updateAccount(
+        {
+            where: {
+                id: args.accountId
+            },
+            data: {
+                accountState: "FLAGGED"
+            }
+        }
+    )
+}
+
+function banAccount(_, args, context, info) {
+    const accountId = getAccountId(context)
+    return context.prisma.mutation.updateAccount(
+        {
+            where: {
+                id: args.accountId
+            },
+            data: {
+                accountState: "BANNED"
+            }
+        }
+    )
+}
+
 module.exports = {
     register,
     login,
-    createNewUser,
-    setProfileToUserAccount
+    refresh,
+    setProfileToAccount,
+    createAccountConnect,
+    createAccountCreate,
+    updateAccount,
+    removeAccount,
+    createRole,
+    updateState,
+    flagAccount,
+    banAccount
 }

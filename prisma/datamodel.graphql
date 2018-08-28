@@ -1,23 +1,19 @@
-type User {
+type Account {
   id: ID! @unique
   email: String! @unique
   password: String!
-  remember_me: Boolean!
-  account_state: AccountState
-  role: [Role!]!
+  rememberMe: Boolean! @default(value: false)
+  accountState: State @default(value: ACTIVE)
+  accountType: AccountType @default(value: OTHER)
+  country: String
+  roles: [Role!]!
   domain: Domain
   profileID: ID @unique
 }
 
-type AccountState {
-  id: ID! @unique
-  state: String!
-  desc: String
-}
-
 type Role {
   id: ID! @unique
-  role: String!
+  role: Roles @default(value: REGULAR)
   desc: String
 }
 
@@ -30,6 +26,28 @@ type Domain {
 type AuthPayload {
   token: String
   refreshToken: String
-  user: User
+  account: Account
   status: String
+}
+
+
+enum State {
+  ACTIVE 
+  INACTIVE
+  DISABLED
+  FLAGGED
+  BANNED
+}
+
+enum Roles {
+  REGULAR
+  PREMIUM
+  ADMIN
+}
+
+enum AccountType {
+  STUDENT
+  TEACHER
+  PARENT
+  OTHER
 }
