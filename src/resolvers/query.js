@@ -1,4 +1,4 @@
-const { getUserId } = require('../utils')
+const { getAccountId } = require('../utils')
 
 
 // User specific resolvers
