@@ -3,7 +3,7 @@
 
 type Query {
     # User specific
-    searchByEmail( email: String! ): Account
+    accountByEmail( email: String! ): Account
 
     # Admin/App specific
     allAccounts: [Account!]!
@@ -16,7 +16,7 @@ type Query {
     roleById( id: ID! ): Role
     allRoles: [Role!]!
     allAccountTypes: [AccountType!]!
-    
+    accountExists(email: String!): Account  
 }
 
 type Mutation {
@@ -39,11 +39,15 @@ type Mutation {
 
 
 type AuthPayload {
-    token: String!
-    account: Account!
+  token: String
+  refreshToken: String
+  account: Account
+  status: String
 }
 
-type Account {
-    id: ID!
-    email: String!
-}
+
+# type Account {
+#     id: ID!
+#     email: String!
+#     profileID: ID
+# }
