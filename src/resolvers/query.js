@@ -3,12 +3,12 @@ const { getAccountId } = require('../utils')
 
 // User specific resolvers
 
-function searchByEmail(_, args, context, info) {
-    const accountId = getAccountId(context)
+function accountByEmail(_, args, context, info) {
+    const payload = getAccountId(context)
     return context.prisma.query.account(
         {
             where: {
-                email_contains: args.email
+                email: args.email
             },
             info
         }
@@ -18,7 +18,7 @@ function searchByEmail(_, args, context, info) {
 // Admin/App specific resolvers
 
 function allAccounts(_, args, context, info) {
-    //const accountId = getAccountId(context)
+    const payload = getAccountId(context)
     return context.prisma.query.accounts(
         _,
         info
@@ -26,7 +26,8 @@ function allAccounts(_, args, context, info) {
 }
 
 function accountById(_, args, context, info) {
-    const accountId = getAccountId(context)
+    const payload = getAccountId(context)
+
     return context.prisma.query.account(
         {
             where: {
@@ -38,7 +39,7 @@ function accountById(_, args, context, info) {
 }
 
 function accountByProfileId (_, args, context, info) {
-    //const accountId = getAccountId(context)
+    const accountId = getAccountId(context)
     return context.prisma.query.account(
         {
             where: {
@@ -125,9 +126,20 @@ function allAccountTypes(_, args, context, info) {
     )
 }
 
+function accountExists(_, args, context, info) {
+    return context.prisma.query.account(
+        {
+            where: {
+                email: args.email
+            }, 
+            info
+        }
+    )
+}
+
 
 module.exports = {
-    searchByEmail,
+    accountByEmail,
     allAccounts,
     accountById,
     accountByProfileId,
@@ -137,5 +149,6 @@ module.exports = {
     allStates,
     roleById,
     allRoles,
-    allAccountTypes
+    allAccountTypes,
+    accountExists
 }
