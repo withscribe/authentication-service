@@ -206,10 +206,7 @@ function removeAccount(_, args, context, info) {
     return context.prisma.mutation.deleteAccount(
         {
             where: {
-                OR: [
-                    { id: args.id },
-                    { email: args.email }
-                ]
+               id: args.id 
             }
         }
     )
