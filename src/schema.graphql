@@ -32,7 +32,7 @@ type Mutation {
     createAccountCreate(email: String!, password: String!, state: State!, accountType: AccountType!, country: String, roles: [ID!]!, profileId: ID!): Account
     updateAccountCreate(email: String, password: String, rememberMe: Boolean, state: State, accountType: AccountType, country: String, roleId: ID): Account
     removeAccount(id: ID, email: String): Account
-    attachProfileToAccount(accountId: ID!, profileID: String!): Account
+    attachProfileToAccount(accountId: ID!, profileID: ID!): Account
     createRole(role: Roles!, desc: String!): Role
     updateState(accountId: ID!, state: State!): Account
     flagAccount(accountId: ID!): Account
