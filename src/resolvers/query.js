@@ -1,10 +1,10 @@
-const { getAccountId } = require('../utils')
+const { verifyToken } = require('../utils')
 
 
 // User specific resolvers
 
 function accountByEmail(_, args, context, info) {
-    const payload = getAccountId(context)
+    const payload = verifyToken(context)
     return context.prisma.query.account(
         {
             where: {
@@ -18,7 +18,7 @@ function accountByEmail(_, args, context, info) {
 // Admin/App specific resolvers
 
 function allAccounts(_, args, context, info) {
-    const payload = getAccountId(context)
+    const payload = verifyToken(context)
     return context.prisma.query.accounts(
         _,
         info
@@ -26,7 +26,7 @@ function allAccounts(_, args, context, info) {
 }
 
 function accountById(_, args, context, info) {
-    const payload = getAccountId(context)
+    const payload = verifyToken(context)
 
     return context.prisma.query.account(
         {
@@ -38,9 +38,10 @@ function accountById(_, args, context, info) {
     )
 }
 
-function accountByProfileId (_, args, context, info) {
-    const accountId = getAccountId(context)
-    return context.prisma.query.account(
+async function accountByProfileId (_, args, context, info) {
+    const payload = verifyToken(context)
+
+    const account = await context.prisma.query.account(
         {
             where: {
                 profileID: args.profileID
@@ -48,10 +49,12 @@ function accountByProfileId (_, args, context, info) {
             info
         }
     )
+
+    return account
 }
 
 function accountsByRole(_, args, context, info) {
-    const accountId = getAccountId(context)
+    const payload = verifyToken(context)
     return context.prisma.query.accounts(
         {
             where: {
@@ -64,7 +67,7 @@ function accountsByRole(_, args, context, info) {
 }
 
 function accountsByType(_, args, context, info) {
-    const accountId = getAccountId(context)
+    const payload = verifyToken(context)
     return context.prisma.query.accounts(
         {
             where: {
@@ -77,7 +80,7 @@ function accountsByType(_, args, context, info) {
 }
 
 function accountsByCountry(_, args, context, info) {
-    const accountId = getAccountId(context)
+    const payload = verifyToken(context)
     return context.prisma.query.accounts(
         {
             where: {
@@ -90,7 +93,7 @@ function accountsByCountry(_, args, context, info) {
 }
 
 function allStates(_, args, context, info) {
-    const accountId = getAccountId(context)
+    const payload = verifyToken(context)
     return context.prisma.query.states(
         _,
         info
@@ -98,7 +101,7 @@ function allStates(_, args, context, info) {
 }
 
 function roleById(_, args, context, info) {
-    const accountId = getAccountId(context)
+    const payload = verifyToken(context)
     return context.prisma.query.role(
         {
             where: {
@@ -111,7 +114,7 @@ function roleById(_, args, context, info) {
 
 
 function allRoles(_, args, context, info) {
-    const accountId = getAccountId(context)
+    const accountId = verifyToken(context)
     return context.prisma.query.roles(
         _,
         info
@@ -119,7 +122,7 @@ function allRoles(_, args, context, info) {
 }
 
 function allAccountTypes(_, args, context, info) {
-    const accountId = getAccountId(context)
+    const accountId = verifyToken(context)
     return context.prisma.query.accountTypes(
         _,
         info

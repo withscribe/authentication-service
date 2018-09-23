@@ -8,7 +8,6 @@ type Query {
     # Admin/App specific
     allAccounts: [Account!]!
     accountById( id: ID! ): Account
-    accountByProfileId( profileID: ID! ): Account
     accountsByRole( role: Roles ): [Account!]!
     accountsByType( accountType: AccountType ): [Account!]!
     accountsByCountry( country: String! ): [Account!]!
@@ -16,21 +15,24 @@ type Query {
     roleById( id: ID! ): Role
     allRoles: [Role!]!
     allAccountTypes: [AccountType!]!
-    accountExists(email: String!): Account  
+    accountExists(email: String!): Account
+
+    # Gateway relationship query
+    accountByProfileId(profileID: String!): Account
 }
 
 type Mutation {
     # User specific
-    register(email: String!, password: String!, profileId: ID): AuthPayload
+    registerAccount(email: String!, password: String!, profileId: ID): AuthPayload
     login(email: String!, password: String!, rememberMe: Boolean!): AuthPayload
     refresh(email: String!, refreshToken: String!): AuthPayload
 
     # Admin/App specific
     createAccountConnect(email: String!, password: String!, state: State!, accountType: AccountType!, country: String, roles: [ID!], profileId: ID!): Account
     createAccountCreate(email: String!, password: String!, state: State!, accountType: AccountType!, country: String, roles: [ID!]!, profileId: ID!): Account
-    updateAccount(accountId: ID!, email: String, password: String, rememberMe: Boolean, state: State, accountType: AccountType, country: String, roleId: ID): Account
+    updateAccountCreate(email: String, password: String, rememberMe: Boolean, state: State, accountType: AccountType, country: String, roleId: ID): Account
     removeAccount(id: ID, email: String): Account
-    setProfileToAccount(accountId: ID!, profileID: ID!): Account
+    attachProfileToAccount(accountId: ID!, profileID: String!): Account
     createRole(role: Roles!, desc: String!): Role
     updateState(accountId: ID!, state: State!): Account
     flagAccount(accountId: ID!): Account
