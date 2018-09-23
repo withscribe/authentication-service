@@ -23,7 +23,7 @@ type Query {
 
 type Mutation {
     # User specific
-    register(email: String!, password: String!, profileId: ID): AuthPayload
+    registerAccount(email: String!, password: String!, profileId: ID): AuthPayload
     login(email: String!, password: String!, rememberMe: Boolean!): AuthPayload
     refresh(email: String!, refreshToken: String!): AuthPayload
 
@@ -32,7 +32,7 @@ type Mutation {
     createAccountCreate(email: String!, password: String!, state: State!, accountType: AccountType!, country: String, roles: [ID!]!, profileId: ID!): Account
     updateAccountCreate(email: String, password: String, rememberMe: Boolean, state: State, accountType: AccountType, country: String, roleId: ID): Account
     removeAccount(id: ID, email: String): Account
-    setProfileToAccount(accountId: ID!, profileID: ID!): Account
+    attachProfileToAccount(accountId: ID!, profileID: String!): Account
     createRole(role: Roles!, desc: String!): Role
     updateState(accountId: ID!, state: State!): Account
     flagAccount(accountId: ID!): Account

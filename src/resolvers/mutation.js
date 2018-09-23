@@ -6,11 +6,11 @@ require('dotenv').config()
 // TODO: Need to find a better way to store refresh tokens
 const tokenList = {}
 
-async function register(parent, args, context, info) {
+async function registerAccount(parent, args, context, info) {
     
     // TODO: Generate and encrypt with and store salt
     // const salt = ....
-
+    
     const password = await bcrypt.hash(args.password, 10)
 
     const account = await context.prisma.mutation.createAccount({
@@ -175,7 +175,6 @@ function createAccountCreate(_, args, context, info) {
 
 function updateAccountCreate(_, args, context, info) {
     const payload = verifyToken(context)
-    console.log("Payload ID: " + payload.accountId)
 
     const account = context.prisma.mutation.updateAccount(
         {
@@ -193,8 +192,6 @@ function updateAccountCreate(_, args, context, info) {
         }, ` { id, email, accountState, accountType, country } `
     )
 
-    console.log(account)
-
     return account
 }
 
@@ -209,10 +206,9 @@ function removeAccount(_, args, context, info) {
     )
 }
 
-function setProfileToAccount(_, args, context, info) {
+function attachProfileToAccount(_, args, context, info) {
     //const payload = verifyToken(context)
-    console.log("setProfileAccount")
-    return context.prisma.mutation.updateAccount(
+    const account = context.prisma.mutation.updateAccount(
         {
             where: {
                 id: args.accountId
@@ -223,6 +219,8 @@ function setProfileToAccount(_, args, context, info) {
             info
         }
     )
+
+    return account
 }
 
 function createRole(_, args, context, info) {
@@ -283,10 +281,10 @@ function banAccount(_, args, context, info) {
 
 
 module.exports = {
-    register,
+    registerAccount,
     login,
     refresh,
-    setProfileToAccount,
+    attachProfileToAccount,
     createAccountConnect,
     createAccountCreate,
     updateAccountCreate,

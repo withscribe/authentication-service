@@ -40,7 +40,7 @@ function accountById(_, args, context, info) {
 
 async function accountByProfileId (_, args, context, info) {
     const payload = verifyToken(context)
-    console.log(args.profileID)
+
     const account = await context.prisma.query.account(
         {
             where: {
@@ -49,8 +49,6 @@ async function accountByProfileId (_, args, context, info) {
             info
         }
     )
-
-    console.log(account)
 
     return account
 }
