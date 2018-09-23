@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const { getAccountId } = require('../utils')
+const { verifyToken } = require('../utils')
 require('dotenv').config()
 
 // TODO: Need to find a better way to store refresh tokens
@@ -101,7 +101,7 @@ async function refresh(_, args, context, info) {
 
     if((args.refreshToken) && (args.refreshToken in tokenList)) {
 
-        const account = await context.prisma.query.account({ where: { email: args.email } }, ` { id, email} ` )
+        const account = await context.prisma.query.account({ where: { email: args.email } }, ` { id, email } ` )
 
         const token = jwt.sign({ accountId: account.id, email: account.email }, process.env.TOKEN_SECRET, { expiresIn: config.tokenLife })
         
@@ -125,7 +125,7 @@ async function refresh(_, args, context, info) {
 function createAccountConnect(_, args, context, info) {
     // if retrieval of userid is unsuccessfull then an error will throw
     // and the mutation will not be invoked
-    const payload = getAccountId(context)
+    const payload = verifyToken(context)
     return context.prisma.mutation.createAccount(
         {
             data: {
@@ -149,7 +149,7 @@ function createAccountConnect(_, args, context, info) {
 function createAccountCreate(_, args, context, info) {
     // if retrieval of userid is unsuccessfull then an error will throw
     // and the mutation will not be invoked
-    const payload = getAccountId(context)
+    const payload = verifyToken(context)
     return context.prisma.mutation.createAccount(
         {
             data: {
@@ -173,36 +173,33 @@ function createAccountCreate(_, args, context, info) {
     )
 }
 
-function updateAccount(_, args, context, info) {
-    // if retrieval of userid is unsuccessfull then an error will throw
-    // and the mutation will not be invoked
-    const payload = getAccountId(context)
+function updateAccountCreate(_, args, context, info) {
+    const payload = verifyToken(context)
+    console.log("Payload ID: " + payload.accountId)
 
-    return  context.prisma.mutation.updateAccount(
+    const account = context.prisma.mutation.updateAccount(
         {
             where: {
-                id: args.accountId
+                id: payload.accountId
             },
             data: {
                 email: args.email,
-                password: args.email,
+                password: args.password,
                 accountState: args.state,
                 accountType: args.accountType,
                 country: args.country,
-                // roles: {
-                //     connect: [
-                //         { id: args.roleId }
-                //     ]
-                // },
-                //profileId: args.profileId
             },
             info
-        },
+        }, ` { id, email, accountState, accountType, country } `
     )
+
+    console.log(account)
+
+    return account
 }
 
 function removeAccount(_, args, context, info) {
-    const payload = getAccountId(context)
+    const payload = verifyToken(context)
     return context.prisma.mutation.deleteAccount(
         {
             where: {
@@ -213,7 +210,8 @@ function removeAccount(_, args, context, info) {
 }
 
 function setProfileToAccount(_, args, context, info) {
-    const payload = getAccountId(context)
+    //const payload = verifyToken(context)
+    console.log("setProfileAccount")
     return context.prisma.mutation.updateAccount(
         {
             where: {
@@ -228,7 +226,7 @@ function setProfileToAccount(_, args, context, info) {
 }
 
 function createRole(_, args, context, info) {
-    const payload = getAccountId(context)
+    const payload = verifyToken(context)
     return context.prisma.mutation.createRole(
         {
             data: {
@@ -241,7 +239,7 @@ function createRole(_, args, context, info) {
 }
 
 function updateState(_, args, context, info) {
-    const payload = getAccountId(context)
+    const payload = verifyToken(context)
     return context.prisma.mutation.updateAccount(
         {
             where: {
@@ -256,7 +254,7 @@ function updateState(_, args, context, info) {
 }
 
 function flagAccount(_, args, context, info) {
-    const payload = getAccountId(context)
+    const payload = verifyToken(context)
     return context.prisma.mutation.updateAccount(
         {
             where: {
@@ -270,7 +268,7 @@ function flagAccount(_, args, context, info) {
 }
 
 function banAccount(_, args, context, info) {
-    const payload = getAccountId(context)
+    const payload = verifyToken(context)
     return context.prisma.mutation.updateAccount(
         {
             where: {
@@ -291,7 +289,7 @@ module.exports = {
     setProfileToAccount,
     createAccountConnect,
     createAccountCreate,
-    updateAccount,
+    updateAccountCreate,
     removeAccount,
     createRole,
     updateState,
