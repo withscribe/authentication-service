@@ -114,7 +114,7 @@ function roleById(_, args, context, info) {
 
 
 function allRoles(_, args, context, info) {
-    const accountId = verifyToken(context)
+    const payload = verifyToken(context)
     return context.prisma.query.roles(
         _,
         info
@@ -122,7 +122,7 @@ function allRoles(_, args, context, info) {
 }
 
 function allAccountTypes(_, args, context, info) {
-    const accountId = verifyToken(context)
+    const payload = verifyToken(context)
     return context.prisma.query.accountTypes(
         _,
         info
