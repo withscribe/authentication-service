@@ -1,23 +1,26 @@
 {
   "name": "prisma",
   "version": "1.0.0",
-  "description": "Authentication Microservice for the Unravel Platform",
+  "description": "Authentication microservice for Scribe",
   "main": "index.js",
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "dotenv": "^6.0.0",
-    "graphql-yoga": "^1.14.6",
+    "dotenv": "^6.1.0",
+    "graphql": "^0.13.2",
+    "graphql-yoga": "^1.16.7",
     "jsonwebtoken": "^8.3.0",
-    "prisma-binding": "^2.0.2"
+    "ora": "^3.0.0",
+    "prisma-client-lib": "^1.19.3"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
-    "nodemon": "^1.17.5"
+    "nodemon": "^1.18.5"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --exec node src/index.js"
+    "test": "nodemon --exec node src/index.js",
+    "start": "pm2 start src/index.js",
+    "restart": "pm2 restart src/index.js"
   },
   "author": "Austin Howlett",
   "license": "ISC"

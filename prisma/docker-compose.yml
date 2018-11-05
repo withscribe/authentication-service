@@ -1,7 +1,7 @@
 version: '3'
 services:
   auth-service:
-    image: prismagraphql/prisma:1.13
+    image: prismagraphql/prisma:1.19
     restart: always
     ports:
     - "4469:4469"
@@ -19,6 +19,7 @@ services:
             user: prisma
             password: prisma
             migrations: true
+            rawAccess: true
   postgres:
     ports:
       - "3001:5432"

@@ -1,5 +1,6 @@
 const { GraphQLServer } = require('graphql-yoga')
-const { Prisma } = require('prisma-binding')
+const { prisma } = require('./generated/prisma-client')
+const ora = require('ora')
 
 const Query = require('./resolvers/query')
 const Mutation = require('./resolvers/mutation')
@@ -16,10 +17,7 @@ const server = new GraphQLServer({
     resolvers,
     context: req => ({
         ...req,
-        prisma: new Prisma({
-            typeDefs: 'src/generated/prisma.graphql',
-            endpoint: 'http://localhost:4469'
-        }),
+        prisma
     }),
     
 });
@@ -31,4 +29,10 @@ const options = {
     playground: '/auth/playground'
 }
 
-server.start(options, ({ port }) => console.log(`Auth Server is now running on PORT: ${port}`));
+server.start(options, ({ port }) => {
+    const spinner = ora().start()
+    setTimeout(function() {
+        console.log(`Authentication service has started! Open on port: ${port}`)
+        spinner.stop()
+    }, 1000);
+});
