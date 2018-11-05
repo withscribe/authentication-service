@@ -29,7 +29,7 @@ pipelines:
           - prisma deploy
           - echo "Application updated."
           - echo "Launching production server..."
-          - pm2 restart src/index.js
+          - pm2 restart auth-service
           - exit $?
           - EOF
           - echo "Production server started successfully."
