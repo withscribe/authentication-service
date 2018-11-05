@@ -1,42 +1,49 @@
-# import * from './generated/prisma.graphql'
-
-
 type Query {
-    # User specific
+    # Account
     accountByEmail( email: String! ): Account
-
-    # Admin/App specific
     allAccounts: [Account!]!
     accountById( id: ID! ): Account
-    accountsByRole( role: Roles ): [Account!]!
-    accountsByType( accountType: AccountType ): [Account!]!
-    accountsByCountry( country: String! ): [Account!]!
-    allStates: [State!]!
-    roleById( id: ID! ): Role
-    allRoles: [Role!]!
-    allAccountTypes: [AccountType!]!
+    accountsByRole(role: Roles): [Account!]!
+    accountsByCountry(country: String!): [Account!]!
     accountExists(email: String!): Account
-
-    # Gateway relationship query
-    accountByProfileId(profileID: String!): Account
+    accountByProfileId(profileId: String!): Account
+    # State
+    allStates: [State!]!
+    # Role
+    roleById(id: ID!): Role
+    allRoles: [Role!]!
 }
 
 type Mutation {
-    # User specific
     registerAccount(email: String!, password: String!, profileId: ID): AuthPayload
     login(email: String!, password: String!, rememberMe: Boolean!): AuthPayload
     refresh(email: String!, refreshToken: String!): AuthPayload
-
-    # Admin/App specific
-    createAccountConnect(email: String!, password: String!, state: State!, accountType: AccountType!, country: String, roles: [ID!], profileId: ID!): Account
-    createAccountCreate(email: String!, password: String!, state: State!, accountType: AccountType!, country: String, roles: [ID!]!, profileId: ID!): Account
-    updateAccountCreate(email: String, password: String, rememberMe: Boolean, state: State, accountType: AccountType, country: String, roleId: ID): Account
+    createAccountConnect(email: String!, password: String!, state: State!, country: String, roles: [ID!], profileId: ID!): Account
+    createAccountCreate(email: String!, password: String!, state: State!, country: String, roles: [ID!]!, profileId: ID!): Account
+    updateAccountCreate(email: String, password: String, rememberMe: Boolean, state: State, country: String, roleId: ID): Account
     removeAccount(id: ID, email: String): Account
-    attachProfileToAccount(accountId: ID!, profileID: ID!): Account
+    attachProfileToAccount(accountId: ID!, profileId: ID!): Account
     createRole(role: Roles!, desc: String!): Role
     updateState(accountId: ID!, state: State!): Account
     flagAccount(accountId: ID!): Account
     banAccount(accountId: ID!): Account
+}
+
+type Account {
+  id: ID!
+  email: String!
+  password: String!
+  rememberMe: Boolean!
+  accountState: State
+  country: String
+  roles: [Role!]!
+  profileID: ID
+}
+
+type Role {
+  id: ID!
+  role: Roles
+  desc: String
 }
 
 
@@ -44,12 +51,18 @@ type AuthPayload {
   token: String
   refreshToken: String
   account: Account
-  status: String
 }
 
+enum State {
+  ACTIVE 
+  INACTIVE
+  DISABLED
+  FLAGGED
+  BANNED
+}
 
-# type Account {
-#     id: ID!
-#     email: String!
-#     profileID: ID
-# }
+enum Roles {
+  REGULAR
+  PREMIUM
+  ADMIN
+}

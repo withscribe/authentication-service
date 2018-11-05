@@ -4,11 +4,9 @@ type Account {
   password: String!
   rememberMe: Boolean! @default(value: false)
   accountState: State @default(value: ACTIVE)
-  accountType: AccountType @default(value: OTHER)
   country: String
   roles: [Role!]!
-  domain: Domain
-  profileID: ID @unique
+  profileId: ID @unique
 }
 
 type Role {
@@ -17,17 +15,10 @@ type Role {
   desc: String
 }
 
-type Domain {
-  id: ID! @unique
-  domain: String!
-  desc: String!
-}
-
 type AuthPayload {
   token: String
   refreshToken: String
   account: Account
-  status: String
 }
 
 
@@ -43,11 +34,4 @@ enum Roles {
   REGULAR
   PREMIUM
   ADMIN
-}
-
-enum AccountType {
-  STUDENT
-  TEACHER
-  PARENT
-  OTHER
 }

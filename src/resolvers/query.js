@@ -1,63 +1,28 @@
 const { verifyToken } = require('../utils')
 
-
-// User specific resolvers
-
 function accountByEmail(_, args, context, info) {
     const payload = verifyToken(context)
-    return context.prisma.query.account(
-        {
-            where: {
-                email: args.email
-            },
-            info
-        }
-    )
+    return context.prisma.account({ email: args.email }, info)
 }
-
-// Admin/App specific resolvers
 
 function allAccounts(_, args, context, info) {
     const payload = verifyToken(context)
-    return context.prisma.query.accounts(
-        _,
-        info
-    )
+    return context.prisma.accounts(_, info)
 }
 
 function accountById(_, args, context, info) {
     const payload = verifyToken(context)
-
-    return context.prisma.query.account(
-        {
-            where: {
-                id: args.id
-            },
-        },
-        info
-    )
+    return context.prisma.account({ id: args.id }, info)
 }
 
 async function accountByProfileId (_, args, context, info) {
     const payload = verifyToken(context)
-
-    const account = await context.prisma.query.account(
-        {
-            where: {
-                profileID: args.profileID
-            }, 
-            info
-        }
-    )
-
-    return account
+    return await context.prisma.account({ profileId: args.profileId }, info)
 }
 
 function accountsByRole(_, args, context, info) {
     const payload = verifyToken(context)
-    return context.prisma.query.accounts(
-        {
-            where: {
+    return context.prisma.accounts({ where: {
                 OR: [
                     { role_contains: args.role }
                 ]
@@ -66,24 +31,9 @@ function accountsByRole(_, args, context, info) {
     )
 }
 
-function accountsByType(_, args, context, info) {
-    const payload = verifyToken(context)
-    return context.prisma.query.accounts(
-        {
-            where: {
-                OR: [
-                    { accountType_contains: args.accountType }
-                ]
-            }
-        }
-    )
-}
-
 function accountsByCountry(_, args, context, info) {
     const payload = verifyToken(context)
-    return context.prisma.query.accounts(
-        {
-            where: {
+    return context.prisma.accounts({ where: {
                 OR: [
                     { country_contains: args.country }
                 ]
@@ -94,50 +44,22 @@ function accountsByCountry(_, args, context, info) {
 
 function allStates(_, args, context, info) {
     const payload = verifyToken(context)
-    return context.prisma.query.states(
-        _,
-        info
-    )
+    return context.prisma.states(_, info)
 }
 
 function roleById(_, args, context, info) {
     const payload = verifyToken(context)
-    return context.prisma.query.role(
-        {
-            where: {
-                id: args.id
-            },
-            info
-        }
-    )
+    return context.prisma.role({ id: args.id }, info )
 }
 
 
 function allRoles(_, args, context, info) {
     const payload = verifyToken(context)
-    return context.prisma.query.roles(
-        _,
-        info
-    )
-}
-
-function allAccountTypes(_, args, context, info) {
-    const payload = verifyToken(context)
-    return context.prisma.query.accountTypes(
-        _,
-        info
-    )
+    return context.prisma.roles(_, info)
 }
 
 function accountExists(_, args, context, info) {
-    return context.prisma.query.account(
-        {
-            where: {
-                email: args.email
-            }, 
-            info
-        }
-    )
+    return context.prisma.account({ email: args.email }, info)
 }
 
 
@@ -147,11 +69,9 @@ module.exports = {
     accountById,
     accountByProfileId,
     accountsByRole,
-    accountsByType,
     accountsByCountry,
     allStates,
     roleById,
     allRoles,
-    allAccountTypes,
     accountExists
 }
