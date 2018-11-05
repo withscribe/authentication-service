@@ -17,12 +17,12 @@ pipelines:
     - step:
         name: Deploy to Production
         deployment: production   # can be test, staging or production.
-        # trigger: manual  # Uncomment to make this a manual deployment.
+        trigger: manual  # Uncomment to make this a manual deployment.
         script:
           - echo "Connecting to production server..."
           - ssh -tt root@138.197.138.117 << EOF
           - echo "Connected to production server."
-          - cd unravel-auth-service
+          - cd scribe-auth-service
           - echo "Updating application..."
           - git pull
           - npm install

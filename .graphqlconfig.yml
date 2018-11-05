@@ -3,7 +3,7 @@ projects:
     schemPath: src/schema.graphql
     extensions:
       endpoints:
-        default: http://localhost:3000
+        default: http://localhost:5000
   prisma:
     schemaPath: src/generated/prisma-client/prisma-schema.js
     extensions:
