@@ -1,6 +1,10 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { verifyToken } = require('../utils')
+const { accountFragment } = require("../fragments/accountFragment");
+
+// NEED TO REFACTOR AUTH METHODS TO ADD FRAGMENT
+const { authPayloadFragment } = require("../fragments/authPayloadFragment");
 
 // TODO: Need to find a better way to store refresh tokens
 const tokenList = {}
@@ -114,7 +118,7 @@ createAccountConnect = async (_, args, context, info) => {
       ]
     },
     profileId: args.profileId
-  })
+  }).$fragment(accountFragment)
 }
 
 createAccountCreate = async (_, args, context, info) => {
@@ -133,7 +137,7 @@ createAccountCreate = async (_, args, context, info) => {
       ]
     },
     profileId: args.profileId
-  })
+  }).$fragment(accountFragment)
 }
 
 updateAccountCreate = async (_, args, context, info) => {
@@ -147,14 +151,14 @@ updateAccountCreate = async (_, args, context, info) => {
       password: args.password,
       accountState: args.state,
       country: args.country,
-    },
-    info
-  })
+    }
+  }).$fragment(accountFragment)
 }
 
 removeAccount = async (_, args, context, info) => {
   const payload = verifyToken(context)
   return await context.prisma.deleteAccount({ id: args.id })
+    .$fragment(accountFragment)
 }
 
     // UNPROTECTED RESOLVER NEEDS ATTENTION!!
@@ -165,9 +169,8 @@ attachProfileToAccount = async (_, args, context, info) => {
     },
     data: {
       profileID: args.profileID
-    },
-    info
-  })
+    }
+  }).$fragment(accountFragment)
 }
 
 createRole = async (_, args, context, info) => {
@@ -188,7 +191,7 @@ updateState = async (_, args, context, info) => {
       accountState: args.state
     }, 
     info
-  })
+  }).$fragment(accountFragment)
 }
 
 flagAccount = async (_, args, context, info) => {
@@ -200,7 +203,7 @@ flagAccount = async (_, args, context, info) => {
     data: {
       accountState: "FLAGGED"
     }
-  })
+  }).$fragment(accountFragment)
 }
 
 banAccount = async (_, args, context, info) => {
@@ -212,7 +215,7 @@ banAccount = async (_, args, context, info) => {
     data: {
       accountState: "BANNED"
     }
-  })
+  }).$fragment(accountFragment)
 }
 
 
