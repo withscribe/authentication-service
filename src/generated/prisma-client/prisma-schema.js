@@ -7,7 +7,7 @@ module.exports = {
   accountState: State
   country: String
   roles(where: RoleWhereInput, orderBy: RoleOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Role!]
-  profileID: ID
+  profileId: ID
 }
 
 type AccountConnection {
@@ -23,7 +23,7 @@ input AccountCreateInput {
   accountState: State
   country: String
   roles: RoleCreateManyInput
-  profileID: ID
+  profileId: ID
 }
 
 input AccountCreateOneInput {
@@ -49,8 +49,8 @@ enum AccountOrderByInput {
   accountState_DESC
   country_ASC
   country_DESC
-  profileID_ASC
-  profileID_DESC
+  profileId_ASC
+  profileId_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -64,7 +64,7 @@ type AccountPreviousValues {
   rememberMe: Boolean!
   accountState: State
   country: String
-  profileID: ID
+  profileId: ID
 }
 
 type AccountSubscriptionPayload {
@@ -92,7 +92,7 @@ input AccountUpdateDataInput {
   accountState: State
   country: String
   roles: RoleUpdateManyInput
-  profileID: ID
+  profileId: ID
 }
 
 input AccountUpdateInput {
@@ -102,7 +102,7 @@ input AccountUpdateInput {
   accountState: State
   country: String
   roles: RoleUpdateManyInput
-  profileID: ID
+  profileId: ID
 }
 
 input AccountUpdateOneInput {
@@ -185,20 +185,20 @@ input AccountWhereInput {
   roles_every: RoleWhereInput
   roles_some: RoleWhereInput
   roles_none: RoleWhereInput
-  profileID: ID
-  profileID_not: ID
-  profileID_in: [ID!]
-  profileID_not_in: [ID!]
-  profileID_lt: ID
-  profileID_lte: ID
-  profileID_gt: ID
-  profileID_gte: ID
-  profileID_contains: ID
-  profileID_not_contains: ID
-  profileID_starts_with: ID
-  profileID_not_starts_with: ID
-  profileID_ends_with: ID
-  profileID_not_ends_with: ID
+  profileId: ID
+  profileId_not: ID
+  profileId_in: [ID!]
+  profileId_not_in: [ID!]
+  profileId_lt: ID
+  profileId_lte: ID
+  profileId_gt: ID
+  profileId_gte: ID
+  profileId_contains: ID
+  profileId_not_contains: ID
+  profileId_starts_with: ID
+  profileId_not_starts_with: ID
+  profileId_ends_with: ID
+  profileId_not_ends_with: ID
   AND: [AccountWhereInput!]
   OR: [AccountWhereInput!]
   NOT: [AccountWhereInput!]
@@ -207,7 +207,7 @@ input AccountWhereInput {
 input AccountWhereUniqueInput {
   id: ID
   email: String
-  profileID: ID
+  profileId: ID
 }
 
 type AggregateAccount {
@@ -226,7 +226,6 @@ type AuthPayload {
   token: String
   refreshToken: String
   account: Account
-  status: String
 }
 
 type AuthPayloadConnection {
@@ -239,7 +238,6 @@ input AuthPayloadCreateInput {
   token: String
   refreshToken: String
   account: AccountCreateOneInput
-  status: String
 }
 
 type AuthPayloadEdge {
@@ -252,8 +250,6 @@ enum AuthPayloadOrderByInput {
   token_DESC
   refreshToken_ASC
   refreshToken_DESC
-  status_ASC
-  status_DESC
   id_ASC
   id_DESC
   createdAt_ASC
@@ -265,7 +261,6 @@ enum AuthPayloadOrderByInput {
 type AuthPayloadPreviousValues {
   token: String
   refreshToken: String
-  status: String
 }
 
 type AuthPayloadSubscriptionPayload {
@@ -290,7 +285,6 @@ input AuthPayloadUpdateInput {
   token: String
   refreshToken: String
   account: AccountUpdateOneInput
-  status: String
 }
 
 input AuthPayloadWhereInput {
@@ -323,20 +317,6 @@ input AuthPayloadWhereInput {
   refreshToken_ends_with: String
   refreshToken_not_ends_with: String
   account: AccountWhereInput
-  status: String
-  status_not: String
-  status_in: [String!]
-  status_not_in: [String!]
-  status_lt: String
-  status_lte: String
-  status_gt: String
-  status_gte: String
-  status_contains: String
-  status_not_contains: String
-  status_starts_with: String
-  status_not_starts_with: String
-  status_ends_with: String
-  status_not_ends_with: String
   AND: [AuthPayloadWhereInput!]
   OR: [AuthPayloadWhereInput!]
   NOT: [AuthPayloadWhereInput!]
