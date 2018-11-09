@@ -1,77 +1,81 @@
 const { verifyToken } = require('../utils')
+const { accountFragment } = require("../fragments/accountFragment");
 
-function accountByEmail(_, args, context, info) {
-    const payload = verifyToken(context)
-    return context.prisma.account({ email: args.email }, info)
+accountByEmail = async (_, args, context, info) => {
+  const payload = verifyToken(context)
+  return await context.prisma.account({ email: args.email })
+    .$fragment(accountFragment)
 }
 
-function allAccounts(_, args, context, info) {
-    const payload = verifyToken(context)
-    return context.prisma.accounts(_, info)
+allAccounts = async (_, args, context, info) => {
+  const payload = verifyToken(context)
+  return await context.prisma.accounts({})
+    .$fragment(accountFragment)
 }
 
-function accountById(_, args, context, info) {
-    const payload = verifyToken(context)
-    return context.prisma.account({ id: args.id }, info)
+accountById = async (_, args, context, info) => {
+  const payload = verifyToken(context)
+  return await context.prisma.account({ id: args.id })
+    .$fragment(accountFragment)
 }
 
-async function accountByProfileId (_, args, context, info) {
-    const payload = verifyToken(context)
-    return await context.prisma.account({ profileId: args.profileId }, info)
+accountByProfileId = async (_, args, context, info) => {
+  const payload = verifyToken(context)
+  return await context.prisma.account({ profileId: args.profileId })
+    .$fragment(accountFragment)
 }
 
-function accountsByRole(_, args, context, info) {
-    const payload = verifyToken(context)
-    return context.prisma.accounts({ where: {
-                OR: [
-                    { role_contains: args.role }
-                ]
-            }
-        }
-    )
+accountsByRole = async (_, args, context, info) => {
+  const payload = verifyToken(context)
+  return await context.prisma.accounts({ where: {
+      OR: [
+        { role_contains: args.role }
+      ]
+    }
+  }).$fragment(accountFragment)
 }
 
-function accountsByCountry(_, args, context, info) {
-    const payload = verifyToken(context)
-    return context.prisma.accounts({ where: {
-                OR: [
-                    { country_contains: args.country }
-                ]
-            }
-        }
-    )
+accountsByCountry = async (_, args, context, info) => {
+  const payload = verifyToken(context)
+  return await context.prisma.accounts({ where: {
+      OR: [
+        { country_contains: args.country }
+      ]
+    }
+  }).$fragment(accountFragment)
 }
 
-function allStates(_, args, context, info) {
-    const payload = verifyToken(context)
-    return context.prisma.states(_, info)
+allStates = async (_, args, context, info) => {
+  const payload = verifyToken(context)
+  return await context.prisma.states({})
 }
 
-function roleById(_, args, context, info) {
-    const payload = verifyToken(context)
-    return context.prisma.role({ id: args.id }, info )
+roleById = async (_, args, context, info) => {
+  const payload = verifyToken(context)
+  return await context.prisma.role({ id: args.id })
 }
 
 
-function allRoles(_, args, context, info) {
-    const payload = verifyToken(context)
-    return context.prisma.roles(_, info)
+allRoles = async (_, args, context, info) => {
+  const payload = verifyToken(context)
+  return await context.prisma.roles({})
 }
 
-function accountExists(_, args, context, info) {
-    return context.prisma.account({ email: args.email }, info)
+accountExists = async (_, args, context, info) => {
+  return await context.prisma.account({ email: args.email })
+    .$fragment(accountFragment)
 }
 
 
 module.exports = {
-    accountByEmail,
-    allAccounts,
-    accountById,
-    accountByProfileId,
-    accountsByRole,
-    accountsByCountry,
-    allStates,
-    roleById,
-    allRoles,
-    accountExists
+  accountByEmail,
+  allAccounts,
+  accountById,
+  accountByProfileId,
+  accountsByRole,
+  accountsByCountry,
+  allStates,
+  roleById,
+  allRoles,
+  accountExists
 }

@@ -1,5 +1,5 @@
 {
-  "name": "prisma",
+  "name": "scribe_auth_service",
   "version": "1.0.0",
   "description": "Authentication microservice for Scribe",
   "main": "index.js",
@@ -19,8 +19,8 @@
   },
   "scripts": {
     "test": "nodemon --exec node src/index.js",
-    "start": "pm2 start src/index.js",
-    "restart": "pm2 restart src/index.js"
+    "start": "pm2 start auth-service",
+    "restart": "pm2 restart auth-service"
   },
   "author": "Austin Howlett",
   "license": "ISC"
