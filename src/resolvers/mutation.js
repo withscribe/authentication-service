@@ -1,3 +1,6 @@
+// Author: Austin Howlett
+// Description: Responsible for resolving all mutation (in realtion to REST this would be POST,PUT,PATCH,DELETE) schema endpoints (business logic)
+
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { verifyToken } = require('../utils')
@@ -13,7 +16,7 @@ registerAccount = async (parent, args, context, info) => {
   const password = await bcrypt.hash(args.password, 10)
 
   const account = await context.prisma.createAccount({
-    email: args.email, 
+    email: args.email,
     password: password,
     roles: {
       create: [
@@ -27,7 +30,7 @@ registerAccount = async (parent, args, context, info) => {
 
   const token = jwt.sign({ accountId: account.id, email: account.email }, process.env.TOKEN_SECRET, { expiresIn: '1h' })
   const refreshToken = jwt.sign({ accountId: account.id, email: account.email }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1h' })
-  
+
   const tokensToPersist = {
       "token": token,
       "refreshToken": refreshToken
@@ -91,7 +94,7 @@ refresh = async (_, args, context, info) => {
     const account = await context.prisma.account({ email: args.email }, ` { id, email } ` )
 
     const token = jwt.sign({ accountId: account.id, email: account.email }, process.env.TOKEN_SECRET, { expiresIn: config.tokenLife })
-    
+
     tokenList[args.refreshToken].token = token;
 
     return {
@@ -189,7 +192,7 @@ updateState = async (_, args, context, info) => {
     },
     data: {
       accountState: args.state
-    }, 
+    },
     info
   }).$fragment(accountFragment)
 }

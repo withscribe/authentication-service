@@ -1,3 +1,6 @@
+// Author: Austin Howlett
+// Description: Fragments ensure that, if requested, all of these fields will be returned
+
 const accountFragment = `
   fragment accountFragment on Account {
     id

@@ -1,3 +1,6 @@
+# Author: Austin Howlett
+# Description: Database models
+
 type Account {
   id: ID! @unique
   email: String! @unique
@@ -6,7 +9,7 @@ type Account {
   accountState: State @default(value: ACTIVE)
   country: String
   roles: [Role!]!
-  profileId: ID @unique
+  profileId: ID @unique @rename(oldName: "profileID")
 }
 
 type Role {
@@ -23,7 +26,7 @@ type AuthPayload {
 
 
 enum State {
-  ACTIVE 
+  ACTIVE
   INACTIVE
   DISABLED
   FLAGGED

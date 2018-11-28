@@ -201,8 +201,8 @@ export type AccountOrderByInput =
   | "accountState_DESC"
   | "country_ASC"
   | "country_DESC"
-  | "profileID_ASC"
-  | "profileID_DESC"
+  | "profileId_ASC"
+  | "profileId_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
@@ -217,8 +217,6 @@ export type AuthPayloadOrderByInput =
   | "token_DESC"
   | "refreshToken_ASC"
   | "refreshToken_DESC"
-  | "status_ASC"
-  | "status_DESC"
   | "id_ASC"
   | "id_DESC"
   | "createdAt_ASC"
@@ -248,14 +246,13 @@ export interface AccountCreateOneInput {
 export type AccountWhereUniqueInput = AtLeastOne<{
   id: ID_Input;
   email?: String;
-  profileID?: ID_Input;
+  profileId?: ID_Input;
 }>;
 
 export interface AuthPayloadCreateInput {
   token?: String;
   refreshToken?: String;
   account?: AccountCreateOneInput;
-  status?: String;
 }
 
 export interface AccountSubscriptionWhereInput {
@@ -341,20 +338,20 @@ export interface AccountWhereInput {
   roles_every?: RoleWhereInput;
   roles_some?: RoleWhereInput;
   roles_none?: RoleWhereInput;
-  profileID?: ID_Input;
-  profileID_not?: ID_Input;
-  profileID_in?: ID_Input[] | ID_Input;
-  profileID_not_in?: ID_Input[] | ID_Input;
-  profileID_lt?: ID_Input;
-  profileID_lte?: ID_Input;
-  profileID_gt?: ID_Input;
-  profileID_gte?: ID_Input;
-  profileID_contains?: ID_Input;
-  profileID_not_contains?: ID_Input;
-  profileID_starts_with?: ID_Input;
-  profileID_not_starts_with?: ID_Input;
-  profileID_ends_with?: ID_Input;
-  profileID_not_ends_with?: ID_Input;
+  profileId?: ID_Input;
+  profileId_not?: ID_Input;
+  profileId_in?: ID_Input[] | ID_Input;
+  profileId_not_in?: ID_Input[] | ID_Input;
+  profileId_lt?: ID_Input;
+  profileId_lte?: ID_Input;
+  profileId_gt?: ID_Input;
+  profileId_gte?: ID_Input;
+  profileId_contains?: ID_Input;
+  profileId_not_contains?: ID_Input;
+  profileId_starts_with?: ID_Input;
+  profileId_not_starts_with?: ID_Input;
+  profileId_ends_with?: ID_Input;
+  profileId_not_ends_with?: ID_Input;
   AND?: AccountWhereInput[] | AccountWhereInput;
   OR?: AccountWhereInput[] | AccountWhereInput;
   NOT?: AccountWhereInput[] | AccountWhereInput;
@@ -420,20 +417,6 @@ export interface AuthPayloadWhereInput {
   refreshToken_ends_with?: String;
   refreshToken_not_ends_with?: String;
   account?: AccountWhereInput;
-  status?: String;
-  status_not?: String;
-  status_in?: String[] | String;
-  status_not_in?: String[] | String;
-  status_lt?: String;
-  status_lte?: String;
-  status_gt?: String;
-  status_gte?: String;
-  status_contains?: String;
-  status_not_contains?: String;
-  status_starts_with?: String;
-  status_not_starts_with?: String;
-  status_ends_with?: String;
-  status_not_ends_with?: String;
   AND?: AuthPayloadWhereInput[] | AuthPayloadWhereInput;
   OR?: AuthPayloadWhereInput[] | AuthPayloadWhereInput;
   NOT?: AuthPayloadWhereInput[] | AuthPayloadWhereInput;
@@ -451,7 +434,7 @@ export interface AccountCreateInput {
   accountState?: State;
   country?: String;
   roles?: RoleCreateManyInput;
-  profileID?: ID_Input;
+  profileId?: ID_Input;
 }
 
 export interface RoleCreateInput {
@@ -466,7 +449,7 @@ export interface AccountUpdateInput {
   accountState?: State;
   country?: String;
   roles?: RoleUpdateManyInput;
-  profileID?: ID_Input;
+  profileId?: ID_Input;
 }
 
 export interface RoleUpdateManyInput {
@@ -535,7 +518,6 @@ export interface AuthPayloadUpdateInput {
   token?: String;
   refreshToken?: String;
   account?: AccountUpdateOneInput;
-  status?: String;
 }
 
 export interface AccountUpdateDataInput {
@@ -545,7 +527,7 @@ export interface AccountUpdateDataInput {
   accountState?: State;
   country?: String;
   roles?: RoleUpdateManyInput;
-  profileID?: ID_Input;
+  profileId?: ID_Input;
 }
 
 export interface NodeNode {
@@ -748,14 +730,12 @@ export interface BatchPayloadSubscription
 export interface AuthPayloadNode {
   token?: String;
   refreshToken?: String;
-  status?: String;
 }
 
 export interface AuthPayload extends Promise<AuthPayloadNode>, Fragmentable {
   token: () => Promise<String>;
   refreshToken: () => Promise<String>;
   account: <T = Account>() => T;
-  status: () => Promise<String>;
 }
 
 export interface AuthPayloadSubscription
@@ -764,7 +744,6 @@ export interface AuthPayloadSubscription
   token: () => Promise<AsyncIterator<String>>;
   refreshToken: () => Promise<AsyncIterator<String>>;
   account: <T = AccountSubscription>() => T;
-  status: () => Promise<AsyncIterator<String>>;
 }
 
 export interface AccountNode {
@@ -774,7 +753,7 @@ export interface AccountNode {
   rememberMe: Boolean;
   accountState?: State;
   country?: String;
-  profileID?: ID_Output;
+  profileId?: ID_Output;
 }
 
 export interface Account extends Promise<AccountNode>, Fragmentable {
@@ -795,7 +774,7 @@ export interface Account extends Promise<AccountNode>, Fragmentable {
       last?: Int;
     }
   ) => T;
-  profileID: () => Promise<ID_Output>;
+  profileId: () => Promise<ID_Output>;
 }
 
 export interface AccountSubscription
@@ -818,7 +797,7 @@ export interface AccountSubscription
       last?: Int;
     }
   ) => T;
-  profileID: () => Promise<AsyncIterator<ID_Output>>;
+  profileId: () => Promise<AsyncIterator<ID_Output>>;
 }
 
 export interface AccountPreviousValuesNode {
@@ -828,7 +807,7 @@ export interface AccountPreviousValuesNode {
   rememberMe: Boolean;
   accountState?: State;
   country?: String;
-  profileID?: ID_Output;
+  profileId?: ID_Output;
 }
 
 export interface AccountPreviousValues
@@ -840,7 +819,7 @@ export interface AccountPreviousValues
   rememberMe: () => Promise<Boolean>;
   accountState: () => Promise<State>;
   country: () => Promise<String>;
-  profileID: () => Promise<ID_Output>;
+  profileId: () => Promise<ID_Output>;
 }
 
 export interface AccountPreviousValuesSubscription
@@ -852,7 +831,7 @@ export interface AccountPreviousValuesSubscription
   rememberMe: () => Promise<AsyncIterator<Boolean>>;
   accountState: () => Promise<AsyncIterator<State>>;
   country: () => Promise<AsyncIterator<String>>;
-  profileID: () => Promise<AsyncIterator<ID_Output>>;
+  profileId: () => Promise<AsyncIterator<ID_Output>>;
 }
 
 export interface AccountSubscriptionPayloadNode {
@@ -881,7 +860,6 @@ export interface AccountSubscriptionPayloadSubscription
 export interface AuthPayloadPreviousValuesNode {
   token?: String;
   refreshToken?: String;
-  status?: String;
 }
 
 export interface AuthPayloadPreviousValues
@@ -889,7 +867,6 @@ export interface AuthPayloadPreviousValues
     Fragmentable {
   token: () => Promise<String>;
   refreshToken: () => Promise<String>;
-  status: () => Promise<String>;
 }
 
 export interface AuthPayloadPreviousValuesSubscription
@@ -897,7 +874,6 @@ export interface AuthPayloadPreviousValuesSubscription
     Fragmentable {
   token: () => Promise<AsyncIterator<String>>;
   refreshToken: () => Promise<AsyncIterator<String>>;
-  status: () => Promise<AsyncIterator<String>>;
 }
 
 export interface AggregateAccountNode {

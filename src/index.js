@@ -1,3 +1,6 @@
+// Author: Austin Howlett
+// Description: Server code, responsible for starting the GraphQLServer and set the pathing and port
+
 const { GraphQLServer } = require('graphql-yoga')
 const { prisma } = require('./generated/prisma-client')
 const ora = require('ora')
@@ -20,7 +23,7 @@ const server = new GraphQLServer({
         ...req,
         prisma
     }),
-    
+
 });
 
 const options = {

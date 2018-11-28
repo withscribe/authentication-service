@@ -1,3 +1,6 @@
+# Author: Austin Howlett
+# Description: GraphQL Schema - endpoints used in http calls (API definition)
+
 type Query {
     # Account
     accountByEmail( email: String! ): Account
@@ -54,7 +57,7 @@ type AuthPayload {
 }
 
 enum State {
-  ACTIVE 
+  ACTIVE
   INACTIVE
   DISABLED
   FLAGGED
