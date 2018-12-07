@@ -2,7 +2,7 @@
 // Description: Responsible for resolving all query (in relation to REST this would GET endpoints) schema endpoints (business logic)
 
 const { verifyToken } = require('../utils')
-const { accountFragment } = require("../fragments/accountFragment");
+const { accountFragment } = require("../fragments/accountfragment");
 
 accountByEmail = async (_, args, context, info) => {
   const payload = verifyToken(context)
