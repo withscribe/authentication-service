@@ -4,10 +4,16 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { verifyToken } = require('../utils')
-const { accountFragment } = require("../fragments/accountFragment");
+const { LoginError } = require('../custom_errors/autherrors')
+const { accountFragment } = require("../fragments/accountfragment");
+
+/*
+* TODOS:
+*     - errorhandling and custom errors
+*/
 
 // NEED TO REFACTOR AUTH METHODS TO ADD FRAGMENT
-const { authPayloadFragment } = require("../fragments/authPayloadFragment");
+const { authPayloadFragment } = require("../fragments/authpayloadfragment");
 
 // TODO: Need to find a better way to store refresh tokens
 const tokenList = {}
@@ -46,15 +52,10 @@ registerAccount = async (parent, args, context, info) => {
 }
 
 login = async (parent, args, context, info) => {
-  const account = await context.prisma.account({ email: args.email }, ` { id, email, password } ` )
+  const account = await context.prisma.account({ email: args.email })
 
   if(!account) {
-    return {
-      error: {
-        field: 'email',
-        msg: 'No User Found'
-      }
-    }
+    throw new LoginError("[ERROR] Incorrect Email or Password.", info, context)
   }
 
   // If user wishes to remember login creds, update flag on account
@@ -66,12 +67,11 @@ login = async (parent, args, context, info) => {
   const valid = await bcrypt.compare(args.password, account.password)
 
   if(!valid) {
-    throw new Error("User Not Found:" + info + " : " + context)
+    throw new LoginError("[ERROR] Incorrect Email or Password.", info, context)
   }
 
-
   const token = jwt.sign({ accountId: account.id, email: account.email }, process.env.TOKEN_SECRET, { expiresIn: '7d' })
-  const refreshToken = jwt.sign({ accountId: account.id, email: account.emaill }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' })
+  const refreshToken = jwt.sign({ accountId: account.id, email: account.email }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' })
 
   const tokensToPersist = {
     "token": token,
